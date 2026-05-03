@@ -18,12 +18,17 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
+  base: './',
   root: mainMenuRoot,
   plugins: [figmaAssetResolver(), react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(mainMenuRoot, 'src'),
     },
+  },
+  build: {
+    outDir: path.resolve(mainMenuRoot, 'dist'),
+    emptyOutDir: true,
   },
   assetsInclude: ['**/*.svg', '**/*.csv'],
 });
