@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GameState } from '../App';
 import { Package, RotateCcw, Award, X, ArrowRight } from 'lucide-react';
 
@@ -15,6 +15,16 @@ interface GameUIProps {
 export function GameUI({ gameState, onReset, onNextLevel, onReturnToMenu, levelNumber, optimalCost, hasNextLevel }: GameUIProps) {
   const suppliesRemaining = gameState.totalSupplies - gameState.suppliesUsed;
   const suppliesPercentage = (suppliesRemaining / gameState.totalSupplies) * 100;
+  const [hasDismissedLevelOneIntro, setHasDismissedLevelOneIntro] = useState(false);
+
+  useEffect(() => {
+    if (levelNumber === 1) {
+      setHasDismissedLevelOneIntro(false);
+    }
+  }, [levelNumber]);
+
+  const shouldShowHistoricalIntro =
+    levelNumber === 1 && gameState.path.length === 1 && !hasDismissedLevelOneIntro;
 
   return (
     <>
@@ -173,6 +183,39 @@ export function GameUI({ gameState, onReset, onNextLevel, onReturnToMenu, levelN
           <RotateCcw className="w-5 h-5" />
           Reiniciar
         </button>
+      )}
+
+      {shouldShowHistoricalIntro && (
+        <div className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-[1px] flex items-center justify-center p-6">
+          <div className="w-full max-w-4xl max-h-[88vh] bg-[#8B4513] border-8 border-[#654321] rounded-lg shadow-2xl flex flex-col">
+            <div className="overflow-y-auto px-8 py-8 text-[#F5DEB3] text-center space-y-6 leading-relaxed">
+              <h2 className="text-3xl text-[#FFD700]">A exploração de Orlleana (1541-1542)</h2>
+              <p>
+                A primeira Grande expedição ocorrida pelos rios da Amazônia se desdobrou em 1541, liderada pelo conquistador espanhol Francisco de Orlleana. O explorador foi participante da conquista do Peru (1532-1535) sob comando dos irmão Pizarro, junto com os quais deu início à longa jornada que o levaria ao Amazonas do passado, a procura de canela e da cidade de El Dorado.
+              </p>
+              <p>
+                Sua viagem começou em fevereiro de 1541 à bordo do navio Victoria, partindo da cidade de Quito e seguiu junto do grupo de exploração por cerca de 1 ano, atravessando os Andes sem nenhum sucesso nos seus objetivos de busca. Também por volta desse período sua embarcação se separa do grupo principal, seguindo por rios que o levaram as terras baixas do atual Amazonas.
+              </p>
+              <p>
+                Enfrentando grandes lutas contra as correntezas dos rios, Francisco concluiu que não conseguiria se reagrupar com os líderes da exploração e tomou a decisão de construir um navio bergantim batizado de San Pedro.
+              </p>
+              <p>
+                Embarcados no novo transporte seu grupo atingiu o Rio Amazonas, conhecido à época como Rio Grande ou Rio da Canela, no dia 12 de fevereiro de 1542, atravessando nos meses seguintes os Rios Negro e Madeira. Durante o trajeto, houve o contato com diversas tribos de povos originários que gerou tanto contatos pacíficos quanto combates e expulsões por certos grupos. Todos esses eventos foram registrados pelo frei espanhol Gaspar de Carvajal, o qual também descreveu um encontro violento com uma tribo supostamente composta somente por mulheres, fato que, apesar de não provado, iniciou o mito das Amazonas na região que futuramente inspiraria o nome do território.
+              </p>
+              <p>
+                Após o suposto encontro, a exploração seguiu até o porto na ilha venezuelana de Trindad e continuou até a para definitiva na ilha de Cubaga em 11 de setembro de 1542. Estimasse que foram percorridos por volta de 7.500 km nas águas, praticamente cruzando o continente.
+              </p>
+            </div>
+            <div className="px-8 pb-8 pt-2 flex justify-center">
+              <button
+                onClick={() => setHasDismissedLevelOneIntro(true)}
+                className="bg-[#FFD700] hover:bg-[#DAA520] text-[#654321] font-semibold py-3 px-8 rounded border-2 border-[#654321] transition-colors"
+              >
+                Vamos navegar?
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
