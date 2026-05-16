@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GameGrid } from './components/GameGrid';
 import { CommandPanel } from './components/CommandPanel';
 import { CommandEditor } from './components/CommandEditor';
@@ -36,6 +36,13 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
   const [showVictoryMenu, setShowVictoryMenu] = useState(false);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
   const [commandsUsed, setCommandsUsed] = useState(0);
+  const [hasDismissedLevelOneHistoricalIntro, setHasDismissedLevelOneHistoricalIntro] = useState(false);
+
+  useEffect(() => {
+    if (currentLevel === 1) {
+      setHasDismissedLevelOneHistoricalIntro(false);
+    }
+  }, [currentLevel]);
 
   // Função para obter a posição inicial do jogador baseada na fase
   function getInitialPosition(level: number) {
@@ -361,6 +368,36 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
                 className="bg-[#3d6b26] hover:bg-[#4d7b36] text-[#f4e4c1] px-8 py-3 rounded border-2 border-[#2d5016] transition-colors text-lg"
               >
                 {onReturnToMenu ? 'Voltar ao Main Menu' : 'Jogar Novamente'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentLevel === 1 && !hasDismissedLevelOneHistoricalIntro && (
+        <div className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-[1px] flex items-center justify-center p-6">
+          <div className="w-full max-w-4xl max-h-[88vh] bg-[#8B4513] border-8 border-[#654321] rounded-lg shadow-2xl flex flex-col">
+            <div className="overflow-y-auto px-8 py-8 text-[#F5DEB3] text-center space-y-6 leading-relaxed">
+              <h2 className="text-3xl text-[#FFD700]">Seringueiros do Ciclo da Borracha (1877 - 1920)</h2>
+              <p>
+                Durante o fim do século XIX e o começo do século XX o Amazonas recebeu grande destaque e crescimento com a exploração da borracha, produzindo e exportando para o mundo inteiro esse insumo. Figuras muito lembradas da época são os grandes Barões da Borracha e suas influências no desenvolvimento das cidades e os Seringueiros que foram responsáveis por de fato extrair e trabalhar essa matéria durante todo o período mesmo sob terríveis condições.
+              </p>
+              <p>
+                A coleta do Látex, matéria prima da borracha, era um processo árduo e diário. Primeiro, o seringueiro tinha de atravessar a mata amazônica, ainda muito desconhecida e perigosa, para encontrar as árvores Seringueiras. Em seguida, cada uma delas recebias uma série de cortes atravessados em seus troncos de onde escorria o soro do Látex. Por fim, vasilhas eram presas nas bases dos cortes para coletar o líquido com o tempo e esse processo era repetido várias vezes por dia sem folgas.
+              </p>
+              <p>
+                Materiais como lâminas, vasilhas, lampiões e diversos bens, incluindo comida, eram &apos;fornecidos&apos; pelos barracões, mercados controlados pelos Barões que vendiam os itens a preços extremamente injustos, sendo parte do mecanismo de escravização por dívida dos trabalhadores. Esses que em sua maioria eram Nordestinos que, fugindo de angustiantes secas e atrás de melhores condições, eram trazidos para casebres na floresta e recebiam a dívida do caro custo de sua viagem, se tornando reféns de seus contratantes e tendo de pagar por sua sobrevivência.
+              </p>
+              <p>
+                Após o fim do ciclo, não houve um destino certo para os seringueiros. Alguns permaneceram atrelados à exploração de borracha, apesar da decaída, outros migraram para as periferias das cidades e outros se juntaram e criaram comunidades hoje conhecidas como ribeirinhas, impactando a dinâmica social da região bem como avançando na ocupação do território apesar do desenrolar não ideal desses fatos.
+              </p>
+            </div>
+            <div className="px-8 pb-8 pt-2 flex justify-center">
+              <button
+                onClick={() => setHasDismissedLevelOneHistoricalIntro(true)}
+                className="bg-[#FFD700] hover:bg-[#DAA520] text-[#654321] font-semibold py-3 px-8 rounded border-2 border-[#654321] transition-colors"
+              >
+                Hora de Coletar
               </button>
             </div>
           </div>

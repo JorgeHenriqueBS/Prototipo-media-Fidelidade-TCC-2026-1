@@ -45,6 +45,7 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
 
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showHistoricalIntro, setShowHistoricalIntro] = useState(true);
 
   const handleDrop = (nodeId: string, food: FoodItem) => {
     const nodeIndex = tree.findIndex(n => n.id === nodeId);
@@ -304,6 +305,33 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
             onNextLevel={onNextLevel}
             onClose={handleCloseModal}
           />
+        )}
+
+        {showHistoricalIntro && (
+          <div className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-[1px] flex items-center justify-center p-6">
+            <div className="w-full max-w-4xl max-h-[88vh] bg-[#8B4513] border-8 border-[#654321] rounded-lg shadow-2xl flex flex-col">
+              <div className="overflow-y-auto px-8 py-8 text-[#F5DEB3] text-center space-y-6 leading-relaxed">
+                <h2 className="text-3xl text-[#FFD700]">Alimentação dos Povos Pré-Colombianos (Antes de 1500)</h2>
+                <p>
+                  Estudos sobre os hábitos de alimentação dos Povos Originários que habitavam o Amazonas, desde séculos antes do contato com os europeus, apontam para uma dieta com alimentos diversificados e a extração sustentável da natureza.
+                </p>
+                <p>
+                  Raízes como Mandioca e Milho eram pilares das refeições, colhidos da própria agricultura das tribos na qual praticava adubação com Terra Preta e mudança do lugar de plantio, garantindo que o solo se renovasse para novas safras. Frutas locais como Tucumã, cupuaçu e buriti também eram coletados da mata para somar a nutrição dos indivíduos.
+                </p>
+                <p>
+                  A pesca configurava o segundo pilar da alimentação, com grande consumo de diferentes peixes da região como Pirarucu, Matrinchã, Tambaqui, Jaraqui e outros de acordo com as cheias e secas dos rios. A depender da proximidade dos rios, algumas tribos também complementavam suas dietas com a caça de espécies como pacas e jabutis.
+                </p>
+              </div>
+              <div className="px-8 pb-8 pt-2 flex justify-center">
+                <button
+                  onClick={() => setShowHistoricalIntro(false)}
+                  className="bg-[#FFD700] hover:bg-[#DAA520] text-[#654321] font-semibold py-3 px-8 rounded border-2 border-[#654321] transition-colors"
+                >
+                  Prepara refeição
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </DndProvider>
