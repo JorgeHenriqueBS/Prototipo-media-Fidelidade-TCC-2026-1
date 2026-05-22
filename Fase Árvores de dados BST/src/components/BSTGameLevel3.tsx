@@ -25,6 +25,7 @@ interface BSTGameLevel3Props {
 }
 
 export function BSTGameLevel3({ onNextLevel }: BSTGameLevel3Props) {
+  const desiredOrder = [5, 7, 3, 8, 2];
   const [foods, setFoods] = useState<FoodItem[]>([
     { id: 'buriti', name: 'Buriti', value: 2, icon: 'buriti', placed: false },
     { id: 'cupuacu', name: 'Cupuaçu', value: 3, icon: 'cupuacu', placed: false },
@@ -133,6 +134,14 @@ export function BSTGameLevel3({ onNextLevel }: BSTGameLevel3Props) {
     setShowResult(false);
   };
 
+  const handleClear = () => {
+    setFoods((prevFoods) => prevFoods.map((food) => ({ ...food, placed: false })));
+    setTree((prevTree) =>
+      prevTree.map((node) => ({ ...node, value: null, foodName: null, icon: null }))
+    );
+    setShowResult(false);
+  };
+
   const handleNextLevel = () => {
     if (onNextLevel) {
       onNextLevel();
@@ -157,6 +166,16 @@ export function BSTGameLevel3({ onNextLevel }: BSTGameLevel3Props) {
 
         {/* Área da Árvore */}
         <div className="relative flex-1 flex items-start justify-center pt-8 pb-2">
+          {tree.some((node) => node.value !== null) && (
+            <button
+              onClick={handleClear}
+              className="absolute bottom-2 left-4 px-4 py-2 bg-amber-700 hover:bg-amber-800 text-white border-4 border-amber-900 text-sm"
+              style={{ imageRendering: 'pixelated', boxShadow: '0 4px 0 #78350f' }}
+            >
+              Limpar
+            </button>
+          )}
+
           <div className="relative">
             {/* Nó Raiz */}
             <div className="flex justify-center mb-8 relative z-20">
@@ -345,7 +364,16 @@ export function BSTGameLevel3({ onNextLevel }: BSTGameLevel3Props) {
             </div>
             
             <div className="relative flex justify-center items-center gap-6">
-              {foods.filter(f => !f.placed).map(food => (
+              {foods
+                .filter((f) => !f.placed)
+                .sort((a, b) => {
+                  const aIndex = desiredOrder.indexOf(a.value);
+                  const bIndex = desiredOrder.indexOf(b.value);
+                  const safeAIndex = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+                  const safeBIndex = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+                  return safeAIndex - safeBIndex;
+                })
+                .map(food => (
                 <DraggableFood key={food.id} food={food} />
               ))}
               {foods.every(f => f.placed) && (

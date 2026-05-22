@@ -3,9 +3,10 @@ import { CommandType } from '../App';
 interface CommandPanelProps {
   addCommand: (type: CommandType) => void;
   isExecuting: boolean;
+  canEditCommands: boolean;
 }
 
-export function CommandPanel({ addCommand, isExecuting }: CommandPanelProps) {
+export function CommandPanel({ addCommand, isExecuting, canEditCommands }: CommandPanelProps) {
   const commands: { type: CommandType; label: string; icon: string }[] = [
     { type: 'cima', label: 'CIMA', icon: '↑' },
     { type: 'baixo', label: 'BAIXO', icon: '↓' },
@@ -24,7 +25,7 @@ export function CommandPanel({ addCommand, isExecuting }: CommandPanelProps) {
           <button
             key={type}
             onClick={() => addCommand(type)}
-            disabled={isExecuting}
+            disabled={isExecuting || !canEditCommands}
             className="bg-[#d4a574] hover:bg-[#e4b584] disabled:bg-[#8b6f47] text-[#2a1f0f] px-4 py-3 rounded border-3 border-[#8b6f47] transition-all hover:scale-105 active:scale-95 disabled:cursor-not-allowed pixel-font flex items-center justify-center gap-2"
           >
             <span className="text-xl">{icon}</span>

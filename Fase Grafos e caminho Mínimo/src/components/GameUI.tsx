@@ -16,6 +16,14 @@ export function GameUI({ gameState, onReset, onNextLevel, onReturnToMenu, levelN
   const suppliesRemaining = gameState.totalSupplies - gameState.suppliesUsed;
   const suppliesPercentage = (suppliesRemaining / gameState.totalSupplies) * 100;
   const [hasDismissedLevelOneIntro, setHasDismissedLevelOneIntro] = useState(false);
+  const destinationNodeByLevel: Record<number, string> = {
+    1: 'D',
+    2: 'E',
+    3: 'F',
+    4: 'F',
+    5: 'I',
+  };
+  const destinationNode = destinationNodeByLevel[levelNumber] ?? '-';
 
   useEffect(() => {
     if (levelNumber === 1) {
@@ -51,6 +59,9 @@ export function GameUI({ gameState, onReset, onNextLevel, onReturnToMenu, levelN
               }`}
               style={{ width: `${suppliesPercentage}%` }}
             />
+          </div>
+          <div className="mt-2 text-sm text-[#F5DEB3] text-center">
+            Destino: <span className="text-white">Nó {destinationNode}</span>
           </div>
         </div>
       </div>

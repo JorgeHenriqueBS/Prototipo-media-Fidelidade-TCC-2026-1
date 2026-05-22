@@ -5,13 +5,17 @@ interface CommandEditorProps {
   removeCommand: (id: string) => void;
   isExecuting: boolean;
   currentCommandIndex: number;
+  canEditCommands: boolean;
+  commandsUsed: number;
 }
 
 export function CommandEditor({ 
   commands, 
   removeCommand, 
   isExecuting,
-  currentCommandIndex 
+  currentCommandIndex,
+  canEditCommands,
+  commandsUsed
 }: CommandEditorProps) {
   const getCommandIcon = (type: string) => {
     const icons: Record<string, string> = {
@@ -44,7 +48,7 @@ export function CommandEditor({
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[#f4e4c1] text-xl pixel-font">EDITOR DE COMANDOS</h2>
         <div className="text-[#d4a574] text-sm pixel-font">
-          {commands.length} comando(s)
+          {commandsUsed} Comandos Usados
         </div>
       </div>
       
@@ -80,7 +84,7 @@ export function CommandEditor({
                   )}
                 </div>
                 
-                {!isExecuting && (
+                {canEditCommands && !isExecuting && (
                   <button
                     onClick={() => removeCommand(command.id)}
                     className="w-8 h-8 bg-[#8b3a3a] hover:bg-[#a04545] text-[#f4e4c1] rounded border-2 border-[#5d2020] transition-colors pixel-font"

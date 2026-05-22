@@ -37,6 +37,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
   const [showFinalMessage, setShowFinalMessage] = useState(false);
   const [commandsUsed, setCommandsUsed] = useState(0);
   const [hasDismissedLevelOneHistoricalIntro, setHasDismissedLevelOneHistoricalIntro] = useState(false);
+  const [isCommandListLocked, setIsCommandListLocked] = useState(false);
 
   useEffect(() => {
     if (currentLevel === 1) {
@@ -150,7 +151,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
   const [grid, setGrid] = useState<GridCell[][]>(() => initializeGrid(normalizedInitialLevel));
 
   const addCommand = (type: CommandType) => {
-    if (isExecuting) return;
+    if (isExecuting || isCommandListLocked) return;
     
     const newCommand: Command = {
       id: `${type}-${Date.now()}-${Math.random()}`,
@@ -161,7 +162,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
   };
 
   const removeCommand = (id: string) => {
-    if (isExecuting) return;
+    if (isExecuting || isCommandListLocked) return;
     setCommands(commands.filter(cmd => cmd.id !== id));
   };
 
@@ -169,7 +170,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
     if (isExecuting || commands.length === 0) return;
     
     setIsExecuting(true);
-    setCommandsUsed(commands.length); // Contar comandos usados
+    setIsCommandListLocked(true);
     let currentPos = { ...playerPosition };
     let currentGrid = grid.map(row => row.map(cell => ({ ...cell })));
 
@@ -186,6 +187,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
       const result = executeCommand(command.type, currentPos, currentGrid);
       currentPos = result.position;
       currentGrid = result.grid;
+      setCommandsUsed((prev) => prev + 1);
       
       setPlayerPosition(currentPos);
       setGrid(currentGrid);
@@ -265,9 +267,26 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
     setCurrentCommandIndex(-1);
     setCommands([]);
     setCommandsUsed(0); // Reset contador de comandos
+    setIsCommandListLocked(false);
     setPlayerPosition(getInitialPosition(currentLevel));
     setShowVictoryMenu(false);
     
+    const newGrid = initializeGrid(currentLevel);
+    setGrid(newGrid);
+  };
+
+  const clearCommands = () => {
+    setIsExecuting(false);
+    setCurrentCommandIndex(-1);
+    setCommands([]);
+    setIsCommandListLocked(false);
+  };
+
+  const restartPosition = () => {
+    if (isExecuting) return;
+    setCurrentCommandIndex(-1);
+    setCommandsUsed(0);
+    setPlayerPosition(getInitialPosition(currentLevel));
     const newGrid = initializeGrid(currentLevel);
     setGrid(newGrid);
   };
@@ -281,6 +300,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
       setCurrentCommandIndex(-1);
       setCommands([]);
       setCommandsUsed(0); // Reset contador de comandos
+      setIsCommandListLocked(false);
       setPlayerPosition(getInitialPosition(nextLevel));
       setShowVictoryMenu(false);
       
@@ -307,6 +327,7 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
     setCurrentCommandIndex(-1);
     setCommands([]);
     setCommandsUsed(0); // Reset contador de comandos
+    setIsCommandListLocked(false);
     setPlayerPosition(getInitialPosition(1));
     const newGrid = initializeGrid(1);
     setGrid(newGrid);
@@ -417,11 +438,18 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
               {isExecuting ? '⏸ PAUSAR' : '▶ EXECUTAR'}
             </button>
             <button
-              onClick={resetGame}
+              onClick={clearCommands}
               disabled={isExecuting}
               className="bg-[#8b4513] hover:bg-[#a0522d] disabled:bg-[#555] text-[#f4e4c1] px-6 py-2 rounded border-2 border-[#5d2e0f] disabled:border-[#333] transition-colors pixel-font"
             >
-              🔄 RESETAR
+              LIMPAR
+            </button>
+            <button
+              onClick={restartPosition}
+              disabled={isExecuting}
+              className="bg-[#6b3f24] hover:bg-[#7b4f34] disabled:bg-[#555] text-[#f4e4c1] px-6 py-2 rounded border-2 border-[#4d2a14] disabled:border-[#333] transition-colors pixel-font"
+            >
+              RECOMEÇAR
             </button>
           </div>
         </div>
@@ -456,11 +484,14 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
               removeCommand={removeCommand}
               isExecuting={isExecuting}
               currentCommandIndex={currentCommandIndex}
+              canEditCommands={!isCommandListLocked}
+              commandsUsed={commandsUsed}
             />
             
             <CommandPanel
               addCommand={addCommand}
               isExecuting={isExecuting}
+              canEditCommands={!isCommandListLocked}
             />
           </div>
         </div>

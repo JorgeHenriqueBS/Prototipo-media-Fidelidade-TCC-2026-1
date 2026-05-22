@@ -25,6 +25,7 @@ interface BSTGameProps {
 }
 
 export function BSTGame({ onNextLevel }: BSTGameProps) {
+  const desiredOrder = [3, 1, 2];
   const instructions = [
     'Organize os alimentos coletados pela tribo para a refeição. Insira cada alimento na árvore de dados conforme seu número, usando as regras de organização de Árvores de dados Binárias.',
     'Cada nó (vazio) da árvore tem até dois nós ligados a ele, chamados de filhos. Para cada nó, os filhos do lado esquerdo devem ter valor menor que o alimento posicionado lá e os do lado direito devem ter valor maior. Arraste todos os alimentos para a árvore seguindo esse critério.',
@@ -136,6 +137,14 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
     setShowResult(false);
   };
 
+  const handleClear = () => {
+    setFoods((prevFoods) => prevFoods.map((food) => ({ ...food, placed: false })));
+    setTree((prevTree) =>
+      prevTree.map((node) => ({ ...node, value: null, foodName: null, icon: null }))
+    );
+    setShowResult(false);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div 
@@ -164,6 +173,16 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
 
         {/* Área da Árvore */}
         <div className="relative flex-1 flex items-center justify-center p-8">
+          {tree.some((node) => node.value !== null) && (
+            <button
+              onClick={handleClear}
+              className="absolute bottom-8 left-8 px-8 py-4 bg-amber-700 hover:bg-amber-800 text-white border-4 border-amber-900"
+              style={{ imageRendering: 'pixelated', boxShadow: '0 6px 0 #14532d' }}
+            >
+              Limpar
+            </button>
+          )}
+
           <div className="relative pt-20">
             {/* Nó Raiz */}
             <div className="flex justify-center mb-8 relative z-20">
@@ -284,7 +303,16 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
             </div>
             
             <div className="relative flex justify-center items-center gap-8">
-              {foods.filter(f => !f.placed).map(food => (
+              {foods
+                .filter((f) => !f.placed)
+                .sort((a, b) => {
+                  const aIndex = desiredOrder.indexOf(a.value);
+                  const bIndex = desiredOrder.indexOf(b.value);
+                  const safeAIndex = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+                  const safeBIndex = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+                  return safeAIndex - safeBIndex;
+                })
+                .map(food => (
                 <DraggableFood key={food.id} food={food} />
               ))}
               {foods.every(f => f.placed) && (
