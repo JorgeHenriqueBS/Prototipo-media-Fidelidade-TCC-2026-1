@@ -32,6 +32,32 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
     'Uma dica: A partir do nó superior, todos os alimentos à esquerda dele devem ser menores que ele e todos os à direita devem ser maiores.',
   ];
 
+  const highlightInstruction = (text: string) => {
+    const highlights = [
+      'Insira cada alimento',
+      'conforme seu número',
+      'até dois nós ligados',
+      'lado esquerdo',
+      'valor menor',
+      'lado direito',
+      'valor maior',
+      'todos os alimentos',
+    ];
+
+    const escapedHighlights = highlights
+      .map((phrase) => phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('|');
+    const regex = new RegExp(`(${escapedHighlights})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => {
+      const isHighlight = highlights.some(
+        (phrase) => phrase.toLowerCase() === part.toLowerCase()
+      );
+      return isHighlight ? <strong key={index}>{part}</strong> : part;
+    });
+  };
+
   const [foods, setFoods] = useState<FoodItem[]>([
     { id: 'tucuma', name: 'Tucumã', value: 1, icon: 'tucuma', placed: false },
     { id: 'buriti', name: 'Buriti', value: 2, icon: 'buriti', placed: false },
@@ -165,8 +191,8 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
         >
           <h2 className="mb-2 text-sm text-[#7f1d1d]">Instruções</h2>
           <div className="space-y-2 text-[11px] leading-5">
-            {instructions.map((instruction) => (
-              <p key={instruction}>{instruction}</p>
+            {instructions.map((instruction, index) => (
+              <p key={index}>{highlightInstruction(instruction)}</p>
             ))}
           </div>
         </div>
@@ -355,7 +381,7 @@ export function BSTGame({ onNextLevel }: BSTGameProps) {
                   onClick={() => setShowHistoricalIntro(false)}
                   className="bg-[#FFD700] hover:bg-[#DAA520] text-[#654321] font-semibold py-3 px-8 rounded border-2 border-[#654321] transition-colors"
                 >
-                  Prepara refeição
+                  Preparar refeição
                 </button>
               </div>
             </div>

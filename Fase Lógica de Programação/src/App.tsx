@@ -468,10 +468,10 @@ export default function App({ onReturnToMenu, initialLevel = 1 }: AppProps) {
                 <h2 className="text-2xl mb-3 pixel-font text-[#f4e4c1]">Regras do Jogo</h2>
                 <div className="space-y-3 text-sm leading-6 text-[#d4e1b1]">
                   <p>Você controla um coletor de borracha, percorrendo uma floresta para coletar seringa.</p>
-                  <p>Para passar de fase, colete a seringa de todas as árvores do mapa e desvie de obstáculos, utilizando ações disponíveis na lista de comandos. Clicando no botão Executar, ações serão feitas na ordem em que estão no editor de comandos.</p>
-                  <p>Você pode clicar em uma ação na lista para incluí-la no Editor e você pode removê-la do editor de qualquer posição.</p>
-                  <p>Árvores precisam ser cortadas antes de serem coletadas.</p>
-                  <p>A fase é concluída apenas quando todas as árvores estiverem no estado Coletada.</p>
+                  <p>Para passar de fase, <b>colete a seringa de todas as árvores</b> do mapa e desvie de obstáculos, utilizando ações disponíveis na lista de comandos. Clicando no botão Executar, <b>ações serão feitas na ordem em que estão</b> no editor de comandos.</p>
+                  <p>Você pode <b>clicar em uma ação</b> na lista <b>para incluí-la</b> no Editor e <b>você pode removê-la do editor de qualquer posição.</b></p>
+                  <p>Árvores precisam ser <b>cortadas antes de serem coletadas</b>.</p>
+                  <p>A fase é concluída apenas quando <b>todas as árvores</b> estiverem no estado Coletada.</p>
                 </div>
               </div>
             )}
